@@ -69,7 +69,7 @@ app.config['MAIL_USERNAME'] = configuration['gmail_username']
 app.config['MAIL_PASSWORD'] = configuration['gmail_password']
 
 app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[U-TAD Prog. Web II - Servidor] '
-app.config['FLASKY_MAIL_SENDER'] = 'Prof. Manoel Gadi <fraudmodelchallenge@gmail.com>'
+app.config['FLASKY_MAIL_SENDER'] = 'Graciano y Ulises'
 
 mail = Mail(app)
 
@@ -137,14 +137,18 @@ def signup():
         if form.validate_on_submit():
             try:
                 password_hashed = generate_password_hash(form.password.data,method='sha256')
+                print("pass has")
                 new_user = models.User(username=form.username.data,
                                 email=form.email.data,
                                 password=password_hashed,
                                 userhash=str(random.getrandbits(128)),
                                 dni=form.dni.data,
                                 silo=form.dni.data[3])
+                print("modelo introducido bd")
                 send_email(new_user.email,'Por favor, confirmar correo.','mail/new_user',user=new_user)
+                print("email enviado")
                 db.session.add(new_user)
+                print("usuario inicia")
                 db.session.commit()
                 flash("User created successfully")
                 return redirect(url_for('login'))
@@ -433,14 +437,14 @@ def uploadpredictions(competioncode):
 def logout():
     return redirect(url_for('index'))
 
-@app.errorhandler(404)
+'''@app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html")
 
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template("500.html")
-
+'''
 #def internal_server_error(e):
 #    return render_template("500.html")
 

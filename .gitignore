@@ -130,6 +130,7 @@ dmypy.json
 
 #Custom
 .vscode
+configuration.json
 *.pyc
 configuration.json
 exp
