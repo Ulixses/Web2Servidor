@@ -1,5 +1,5 @@
 {% extends "bootstrap/base.html" %}
-{#{% import "bootstrap/wtf.html" as wtf %}#}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block styles %}
 {{ super() }}
@@ -21,8 +21,8 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li class="{{'active' if page == 'dashboard'}}"><a href="{{ url_for('dashboard')}}">Inicio</a></li>
-            <!-- <li class="{#{'active' if page == 'profile'}#}"><a href="{#{ url_for('profile')}#}">Perfil</a></li>
-            <li class="{#{'active' if page == 'upload'}}"><a href="{{ url_for('upload')}#}">Subir documento</a></li> -->
+            <li class="{{'active' if page == 'profile'}}"><a href="{{ url_for('.profile')}}">Perfil</a></li>
+            <li class="{{'active' if page == 'upload'}}"><a href="{{ url_for('.upload')}}">Subir documento</a></li>
             <li><a href="{{ url_for('logout')}}">Log Out</a></li>
           </ul>
           <form class="navbar-form navbar-right">
@@ -36,8 +36,8 @@
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li class="{{'active' if page == 'dashboard'}}"><a href="{{ url_for('dashboard')}}">Inicio <span class="sr-only">(current)</span></a></li>
-            <!--<li class="{#{'active' if page == 'profile'}#}"><a href="{#{ url_for('profile')}#}">Perfil</a></li>
-            <li class="{#{'active' if page == 'upload'}#}"><a href="{#{ url_for('upload')}#}">Subir documento</a></li>-->
+            <li class="{{'active' if page == 'profile'}}"><a href="{{ url_for('profile')}}">Perfil</a></li>
+            <li class="{{'active' if page == 'upload'}}"><a href="{{ url_for('upload')}}">Subir documento</a></li>
           </ul>
         </div>
 {% endblock navbar %}

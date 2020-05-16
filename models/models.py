@@ -1,26 +1,22 @@
 from flask import Flask
 from flask_login import UserMixin
-from flask_sqlalchemy  import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 import json
+from datetime import datetime
 
-
-#print("MODELS.PY:",__name__)
 app = Flask('flask_app')
 
-with open('/home/manoelutad/configuration.json') as json_file:
+with open('configuration.json') as json_file:
     configuration = json.load(json_file)
 
 app.config['SECRET_KEY'] = configuration['SECRET_KEY']
 
-
-
-SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
+SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}?auth_plugin=mysql_native_password".format(
     username=configuration['mysql_username'],
     password=configuration['mysql_password'],
     hostname=configuration['mysql_hostaname'],
-    databasename=configuration['mysql_databasename'],
-)
-
+    databasename=configuration['mysql_databasename']
+    )
 
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
@@ -39,7 +35,7 @@ class User(UserMixin, db.Model):
     dni = db.Column(db.String(9))
     silo = db.Column(db.String(9))
 
-from datetime import datetime
+
 class File(UserMixin, db.Model):
     __tablename__ = 'files'
     id = db.Column(db.Integer, primary_key=True)
@@ -47,6 +43,7 @@ class File(UserMixin, db.Model):
     competioncode = db.Column(db.String(15))
     filename = db.Column(db.String(50))
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 class Competition(UserMixin, db.Model):
     __tablename__ = 'competitions'
@@ -65,10 +62,5 @@ class Prediction(UserMixin, db.Model):
     metrica = db.Column(db.String(15))
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Ver los constraints en MYSQL:
-# SELECT * FROM   information_schema.table_constraints WHERE  table_schema = schema() AND table_name = 'predictions';
 
-
-
-
-
+db.create_all()
