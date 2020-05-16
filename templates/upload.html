@@ -12,7 +12,7 @@
         		    <div id="drop-mask"></div>
                         <h4>Por favor subir 2 ficheros. El fichero de entrenamiento y el fichero de test: </h4>
                         <form action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
-            				<input type="file" name="file" id="fileInput" class="button2" accept="image/*" capture ><br><br>
+            				<input type="file" name="file" id="fileInput" class="button2" accept=".csv" capture multiple><br><br>
                             <input type="submit" value="Subir" class="button3">
                         </form>
                 </div>

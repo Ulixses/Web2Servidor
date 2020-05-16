@@ -132,4 +132,6 @@ dmypy.json
 .vscode
 configuration.json
 *.pyc
+configuration.json
 exp
+uploads

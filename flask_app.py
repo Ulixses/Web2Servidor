@@ -237,7 +237,7 @@ def upload():
             errors += 1
         else: # FICHERO APROBADO!
             num_files += 1
-            file_path = '/home/manoelutad/mysite/uploads/temp1.csv'
+            file_path = './uploads/temp1.csv'
             try:
                 if os.path.isfile(file_path):
                     os.remove(file_path)
@@ -253,7 +253,7 @@ def upload():
             errors += 1
         else: # FICHERO APROBADO!
             num_files += 1
-            file_path = '/home/manoelutad/mysite/uploads/temp2.csv'
+            file_path = './uploads/temp2.csv'
             try:
                 if os.path.isfile(file_path):
                     os.remove(file_path)
@@ -276,9 +276,9 @@ def upload():
         competioncode =  ''.join(random.choice('123456789ABCDEFGHIJKLMNOPQRSTUVYXZabcdefghijklmnopqrstuvyxz') for i in range(10))
         filename_prefix = current_user.username+"__" +  str(competioncode)
 
-        df_train.to_csv('/home/manoelutad/mysite/static/uploads/'+filename_prefix+"__train.csv")
-        df_test_public.to_csv('/home/manoelutad/mysite/static/uploads/'+filename_prefix+"__test.csv")
-        df_test_private.to_csv('/home/manoelutad/mysite/uploads/'+filename_prefix+"__test_private.csv")
+        df_train.to_csv('./static/uploads/'+filename_prefix+"__train.csv")
+        df_test_public.to_csv('./uploads/'+filename_prefix+"__test.csv")
+        df_test_private.to_csv('./uploads/'+filename_prefix+"__test_private.csv")
 
 
         new_competition = models.Competition(competioncode=competioncode,
@@ -449,6 +449,6 @@ def internal_server_error(e):
 #    return render_template("500.html")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=1)
     #app.run()
 
