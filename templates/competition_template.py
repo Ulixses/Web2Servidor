@@ -3,10 +3,10 @@ import pandas as pd
 
 
 print ("LOADING DATASETS...")
-df_train = pd.read_csv("http://manoelutad.pythonanywhere.com/static/uploads/{{competion.username}}__{{competion.competioncode}}__train.csv")
+df_train = pd.read_csv("http://{{base_url}}/static/uploads/{{competion.username}}__{{competion.competioncode}}__train.csv")
 df_train.head()
 
-df_test = pd.read_csv("http://manoelutad.pythonanywhere.com/static/uploads/{{competion.username}}__{{competion.competioncode}}__test.csv")
+df_test = pd.read_csv("http://{{base_url}}/static/uploads/{{competion.username}}__{{competion.competioncode}}__test.csv")
 df_test.head()
 
 print ("STEP 1: DOING MY TRANSFORMATIONS...")
@@ -86,7 +86,7 @@ df_test_tosend = df_test[['id','pred']]
 
 filename = "df_test_tosend.csv"
 df_test_tosend.to_csv(filename, sep=',')
-url = 'http://manoelutad.pythonanywhere.com/uploadpredictions/{{competion.competioncode}}'
+url = 'http://{{base_url}}/uploadpredictions/{{competion.competioncode}}'
 files = {'file': (filename, open(filename, 'rb'))}
 
 """

@@ -61,15 +61,6 @@ class Prediction(UserMixin, db.Model):
     score = db.Column(db.Float)
     metrica = db.Column(db.String(15))
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
-<<<<<<< HEAD
-=======
 db.create_all()
 # Ver los constraints en MYSQL:
 # SELECT * FROM   information_schema.table_constraints WHERE  table_schema = schema() AND table_name = 'predictions';
-
-
-
->>>>>>> master
-
-
-db.create_all()

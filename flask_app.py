@@ -73,10 +73,10 @@ app.config['FLASKY_MAIL_SENDER'] = 'Graciano y Ulises'
 
 mail = Mail(app)
 
-def send_email(to, subject, template, **kwargs):
+def send_email(to, subject, template, url,**kwargs):
     msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + subject, sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])
     msg.body = render_template(template + '.txt', **kwargs)
-    msg.html = render_template(template + '.html', **kwargs)
+    msg.html = render_template(template + '.html', **kwargs,base_url=url)
     mail.send(msg)
 
 
@@ -145,7 +145,7 @@ def signup():
                                 dni=form.dni.data,
                                 silo=form.dni.data[3])
                 print("modelo introducido bd")
-                send_email(new_user.email,'Por favor, confirmar correo.','mail/new_user',user=new_user)
+                send_email(new_user.email,'Por favor, confirmar correo.','mail/new_user',user=new_user,url=request.host)
                 print("email enviado")
                 db.session.add(new_user)
                 print("usuario inicia")
@@ -330,7 +330,7 @@ def code(competioncode):
 #        return("es vacio")
 #    else:
 #        return("no es vacio")
-    return render_template("competition_template.py",competion=competion,current_user=current_user)
+    return render_template("competition_template.py",competion=competion,current_user=current_user, base_url=request.host )
 
 
 @app.route('/ranking/<competioncode>', methods=['GET'])
