@@ -14,13 +14,12 @@
               <span class="text-muted">Something else</span>
             </div>
           </div>
-
+          <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h2 class="sub-header">Jugando</h2>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>#</th>
                   <th>Competicion</th>
                   <th>Usuario</th>
                   <th>Score</th>
@@ -28,7 +27,7 @@
               </thead>
               <tbody>
                
-                {% for row in rows_competciones_jugando %}
+                {% for row in rows_competiciones_jugando %}
                     <tr>
                         <td><a href="/files/{{ row.competioncode }}">{{ row.competioncode }}</a></td>
                         <td>{{ row.username }}</td>
@@ -43,7 +42,6 @@
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>#</th>
                     <th>Competicion</th>
                     <th>Usuario</th>
                     <th>Fecha creacion</th>
@@ -61,7 +59,7 @@
               </table>
             {% endif %}
 
-
+          </div>
           </div>
         </div>
       </div>

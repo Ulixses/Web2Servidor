@@ -190,9 +190,12 @@ def dashboard():
     elif(current_user.type_user ==2):
         user_table_creadas = models.Competition.query.filter_by(username =  current_user.username)
         user_table_jugando = models.Prediction.query.filter_by(username =  current_user.username)
+        print(2)
         return render_template("dashboard.html", page="dashboard",current_user=current_user, rows_competiciones_creadas = user_table_creadas,rows_competiciones_jugando =  user_table_jugando)
     elif(current_user.type_user ==3):
         user_table_jugando = models.Prediction.query.filter_by(username =  current_user.username)
+        for i in user_table_jugando:
+            print(i)
         return render_template("dashboard.html", page="dashboard",current_user=current_user, rows_competiciones_jugando = user_table_jugando)
 
 @app.route('/profile', methods=['GET','POST'])
