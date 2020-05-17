@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField#, SelectField
+from wtforms import StringField, PasswordField, BooleanField, SelectField
 from wtforms.validators import InputRequired, Length, Email, NoneOf, Regexp
 
 class LoginForm(FlaskForm):
@@ -24,6 +24,7 @@ class RegisterForm(FlaskForm):
     dni = StringField('DNI o un NIE',validators=[InputRequired(),
                                              Length(max=9),
                                              Regexp('^([a-z]|[A-Z]|[0-9])[0-9]{7}[a-zA-Z]$')])
+    type_user = SelectField("Tipo de usuario", choices=[(2,"Desafiante"),(3,"Jugador")] ,validators = None, coerce  =  int)
 
 class ProfileForm(FlaskForm):
     username = StringField('Nombre de usuario',validators=[InputRequired(), Length(min=4, max=15),

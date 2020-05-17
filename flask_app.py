@@ -19,7 +19,7 @@ from datetime import datetime
 from flask_login import LoginManager, login_required, login_user, UserMixin, current_user
 #from flask_migrate import Migrate
 from flask_mail import Mail, Message
-
+from sqlalchemy import desc
 import json
 
 with open('configuration.json') as json_file:
@@ -101,7 +101,8 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template("index.html", page="index", current_time=datetime.utcnow())
+    competiciones = models.Competition.query.all()
+    return render_template("index.html", page="index", current_time=datetime.utcnow(), competiciones = competiciones)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -125,7 +126,7 @@ def login():
                 flash('Access denied - wrong username or password')
     else:
         pass
-    return render_template("login.html", page="login", form=form)
+    return render_template("login.html",page="login", form=form)
 
 import random
 @app.route('/signup', methods=['GET','POST'])
@@ -143,7 +144,9 @@ def signup():
                                 password=password_hashed,
                                 userhash=str(random.getrandbits(128)),
                                 dni=form.dni.data,
+                                type_user = int(form.type_user.data),
                                 silo=form.dni.data[3])
+                print(form.type_user)
                 print("modelo introducido bd")
                 send_email(new_user.email,'Por favor, confirmar correo.','mail/new_user',user=new_user,url=request.host)
                 print("email enviado")
@@ -178,7 +181,19 @@ def confirmuser(username,userhash):
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template("dashboard.html", page="dashboard",current_user=current_user)
+    if(current_user.type_user == 0):
+        #returnear un dashboard que pueda manejar todos los employees y hacer todo lo que hace un empleado
+        pass
+    elif(current_user.type_user ==1):
+        #returnear un dashboard que pueda crear usuarios sin confirmacion, manejar contraseñas y borrar usuarios
+        pass
+    elif(current_user.type_user ==2):
+        user_table_creadas = models.Competition.query.filter_by(username =  current_user.username)
+        user_table_jugando = models.Prediction.query.filter_by(username =  current_user.username)
+        return render_template("dashboard.html", page="dashboard",current_user=current_user, rows_competiciones_creadas = user_table_creadas,rows_competiciones_jugando =  user_table_jugando)
+    elif(current_user.type_user ==3):
+        user_table_jugando = models.Prediction.query.filter_by(username =  current_user.username)
+        return render_template("dashboard.html", page="dashboard",current_user=current_user, rows_competiciones_jugando = user_table_jugando)
 
 @app.route('/profile', methods=['GET','POST'])
 @login_required
@@ -336,9 +351,9 @@ def code(competioncode):
 @app.route('/ranking/<competioncode>', methods=['GET'])
 @login_required
 def ranking(competioncode):
-    competioncode = 'b8bNYH3b9r'
-#    best_predictions = models.Prediction.query(models.Prediction.competioncode,models.Prediction.username, models.db.func.max(models.Prediction.score).label('max_score')).filter_by(competioncode=competioncode).group_by(models.Prediction.username).all()
-#    return render_template("ranking.html", page="ranking",current_user=current_user, rows=best_predictions)
+    best_predictions = models.Prediction.query.filter_by(competioncode=competioncode).order_by(desc(models.Prediction.score)).all()
+    print(best_predictions)
+    return render_template("ranking.html", page="ranking",current_user=current_user, rows=best_predictions)
 
 
 
@@ -393,7 +408,7 @@ def uploadpredictions(competioncode):
     df_private.index = df_private.id
 #    return('len(df_private) ={}'.format(len(df_private)))
 
-    file_path = '/home/'+configuration['mysql_username']+'/mysite/uploads/submission_temp.csv'
+    file_path = './uploads/submission_temp.csv'
     try:
         if os.path.isfile(file_path):
             os.remove(file_path)

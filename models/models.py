@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
+
 import json
 from datetime import datetime
 
@@ -34,6 +35,7 @@ class User(UserMixin, db.Model):
     userhash = db.Column(db.String(50))
     dni = db.Column(db.String(9))
     silo = db.Column(db.String(9))
+    type_user = db.Column(db.Integer)#1:admin 2:empleado 3: challenger 4: player
 
 
 class File(UserMixin, db.Model):
