@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, SelectField,MultipleFileField,IntegerField#,DateField
 from wtforms.validators import InputRequired, Length, Email, NoneOf, Regexp
-
+from wtforms.fields.html5 import DateField
 class LoginForm(FlaskForm):
     username = StringField('Nombre de usuario',validators=[InputRequired(), Length(min=4,max=15)])
     password = PasswordField('Contraseña',validators=[InputRequired(), Length(min=8, max=80)])
@@ -45,4 +45,10 @@ class ProfileForm(FlaskForm):
 
     silo = StringField('Grupo asignado',validators=[InputRequired(),
                                              Length(max=9)])
+class UploadForm(FlaskForm):
+    descripcion = StringField('Descripcion',validators= None)
+    intentos_diarios = IntegerField('Intentos diarios' ,validators= None)
+    dia_inicio = DateField('Dia de inicio',validators= None)
+    dia_fin = DateField('Dia de inicio',validators= None)
+
 

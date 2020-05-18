@@ -44,7 +44,7 @@ class File(UserMixin, db.Model):
     username = db.Column(db.String(15))
     competioncode = db.Column(db.String(15))
     filename = db.Column(db.String(50))
-    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    creation_date = db.Column(db.DateTime, default=datetime.now)
 
 
 class Competition(UserMixin, db.Model):
@@ -52,8 +52,11 @@ class Competition(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     competioncode = db.Column(db.String(15), unique=True)
     username = db.Column(db.String(15))
-    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
-
+    creation_date = db.Column(db.DateTime, default=datetime.now)
+    inicio_date = db.Column(db.DateTime)
+    final_date = db.Column(db.DateTime)
+    num_max_intentos = db.Column(db.Integer)
+    descripcion = db.Column(db.String(1000))
 
 class Prediction(UserMixin, db.Model):
     __tablename__ = 'predictions'
@@ -62,7 +65,7 @@ class Prediction(UserMixin, db.Model):
     username = db.Column(db.String(15))
     score = db.Column(db.Float)
     metrica = db.Column(db.String(15))
-    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    creation_date = db.Column(db.DateTime, default=datetime.now)
 db.create_all()
 # Ver los constraints en MYSQL:
 # SELECT * FROM   information_schema.table_constraints WHERE  table_schema = schema() AND table_name = 'predictions';

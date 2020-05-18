@@ -6,16 +6,21 @@
 {% block content %}
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="col-sm-9 col-sm-offset-3 col-md-25 col-md-offset-2 main">
             <div class="container">
                 <div id="box">
         		    <div id="drop-mask"></div>
                         <h4>Por favor subir 2 ficheros. El fichero de entrenamiento y el fichero de test: </h4>
                         <form action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
-            				<input type="file" name="file" id="fileInput" class="button2" accept=".csv" capture multiple><br><br>
+                    <input type="file" name="file" id="fileInput" class="button2" accept=".csv" capture multiple><br><br>
+                  </div>
+                    {{ form.hidden_tag() }}
+                    {{ wtf.form_field(form.descripcion) }}
+                    {{ wtf.form_field(form.intentos_diarios) }}
+                    {{ wtf.form_field(form.dia_inicio)}}
+                    {{ wtf.form_field(form.dia_fin) }}
                             <input type="submit" value="Subir" class="button3">
                         </form>
-                </div>
             </div>
 
         <br>
@@ -30,6 +35,10 @@
                       <th>Código de la competición</th>
                       <th>Código python para competir</th>
                       <th>Fecha de creación</th>
+                      <th>Fecha Inicio</th>
+                      <th>Fecha Fin</th>
+                      <th>Max Intentos</th>
+                      <th>Descripcion</th>
                     </tr>
                   </thead>
 
@@ -41,8 +50,11 @@
                         <td>{{ row.username }}</td>
                         <td><a href="/files/{{ row.competioncode }}">{{ row.competioncode }}</a></td>
                         <td><a href="/code/{{ row.competioncode }}.py" download>{{ row.competioncode }}.py</a></td>
-
                         <td>{{ row.creation_date }}</td>
+                        <td>{{ row.inicio_date }}</td>
+                        <td>{{ row.final_date }}</td>
+                        <td>{{ row.num_max_intentos }}</td>
+                        <td>{{ row.descripcion }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>

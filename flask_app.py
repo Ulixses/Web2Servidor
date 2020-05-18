@@ -21,7 +21,7 @@ from flask_login import LoginManager, login_required, login_user, UserMixin, cur
 from flask_mail import Mail, Message
 from sqlalchemy import desc
 import json
-
+import datetime
 with open('configuration.json') as json_file:
     configuration = json.load(json_file)
 
@@ -191,6 +191,9 @@ def dashboard():
         user_table_creadas = models.Competition.query.filter_by(username =  current_user.username)
         user_table_jugando = models.Prediction.query.filter_by(username =  current_user.username)
         print(2)
+        print(current_user.username)
+        for i in user_table_creadas:
+            print(i)
         return render_template("dashboard.html", page="dashboard",current_user=current_user, rows_competiciones_creadas = user_table_creadas,rows_competiciones_jugando =  user_table_jugando)
     elif(current_user.type_user ==3):
         user_table_jugando = models.Prediction.query.filter_by(username =  current_user.username)
@@ -240,96 +243,102 @@ import pandas as pd
 @app.route('/upload', methods=['GET','POST'])
 @login_required
 def upload():
-    if request.method == 'POST': #Recibir el fichero
-        num_files = 0
-        errors = 0
-        if (len(request.files.getlist('file')) != 2):
-            flash('Por favor subir 2 ficheros. El fichero de entrenamiento y el fichero de test. Usted ha subido {} ficheros.'.format(len(request.files.getlist('file'))))
-            return render_template("upload.html", page="upload",current_user=current_user)
+    form = forms.UploadForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            num_files = 0
+            errors = 0
+            if (len(request.files.getlist('file')) != 2):
+                flash('Por favor subir 2 ficheros. El fichero de entrenamiento y el fichero de test. Usted ha subido {} ficheros.'.format(len(request.files.getlist('file'))))
+                return render_template("upload.html", page="upload",current_user=current_user)
 
-        file_obj = request.files.getlist('file')[0]
-        filename_secured = secure_filename(file_obj.filename)
-        if allowed_file(filename_secured) is False:
-            flash("Documento {} no es válido. Los documentos válidos son: {}". \
-                format(str(filename_secured), ALLOWED_EXTENSIONS))
-            errors += 1
-        else: # FICHERO APROBADO!
-            num_files += 1
-            file_path = './uploads/temp1.csv'
-            try:
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-            finally:
-                file_obj.save(file_path)
-        df1 = pd.read_csv(file_path)
+            file_obj = request.files.getlist('file')[0]
+            filename_secured = secure_filename(file_obj.filename)
+            if allowed_file(filename_secured) is False:
+                flash("Documento {} no es válido. Los documentos válidos son: {}". \
+                    format(str(filename_secured), ALLOWED_EXTENSIONS))
+                errors += 1
+            else: # FICHERO APROBADO!
+                num_files += 1
+                file_path = './uploads/temp1.csv'
+                try:
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                finally:
+                    file_obj.save(file_path)
+            df1 = pd.read_csv(file_path)
 
-        file_obj = request.files.getlist('file')[1]
-        filename_secured = secure_filename(file_obj.filename)
-        if allowed_file(filename_secured) is False:
-            flash("Documento {} no es válido. Los documentos válidos son: {}". \
-                format(str(filename_secured), ALLOWED_EXTENSIONS))
-            errors += 1
-        else: # FICHERO APROBADO!
-            num_files += 1
-            file_path = './uploads/temp2.csv'
-            try:
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-            finally:
-                file_obj.save(file_path)
-        df2 = pd.read_csv(file_path)
+            file_obj = request.files.getlist('file')[1]
+            filename_secured = secure_filename(file_obj.filename)
+            if allowed_file(filename_secured) is False:
+                flash("Documento {} no es válido. Los documentos válidos son: {}". \
+                    format(str(filename_secured), ALLOWED_EXTENSIONS))
+                errors += 1
+            else: # FICHERO APROBADO!
+                num_files += 1
+                file_path = './uploads/temp2.csv'
+                try:
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                finally:
+                    file_obj.save(file_path)
+            df2 = pd.read_csv(file_path)
 
-        if len(df1) > len(df2):
-            df_train, df_test = df1, df2
-        else:
-            df_train, df_test = df2, df1
+            if len(df1) > len(df2):
+                df_train, df_test = df1, df2
+            else:
+                df_train, df_test = df2, df1
 
-#        df_test_public = df_test.iloc[:,:-1]
-#        df_test_private = df_test.iloc[:,-1]
+    #        df_test_public = df_test.iloc[:,:-1]
+    #        df_test_private = df_test.iloc[:,-1]
 
-        df_test_public = df_test.iloc[:,:-1]
-        df_test_private = df_test.copy().drop(columns=df_test.columns[0:-1])
-
-
-        competioncode =  ''.join(random.choice('123456789ABCDEFGHIJKLMNOPQRSTUVYXZabcdefghijklmnopqrstuvyxz') for i in range(10))
-        filename_prefix = current_user.username+"__" +  str(competioncode)
-
-        df_train.to_csv('./static/uploads/'+filename_prefix+"__train.csv")
-        df_test_public.to_csv('./uploads/'+filename_prefix+"__test.csv")
-        df_test_private.to_csv('./uploads/'+filename_prefix+"__test_private.csv")
+            df_test_public = df_test.iloc[:,:-1]
+            df_test_private = df_test.copy().drop(columns=df_test.columns[0:-1])
 
 
-        new_competition = models.Competition(competioncode=competioncode,
-                        username=current_user.username)
-        db.session.add(new_competition)
+            competioncode =  ''.join(random.choice('123456789ABCDEFGHIJKLMNOPQRSTUVYXZabcdefghijklmnopqrstuvyxz') for i in range(10))
+            filename_prefix = current_user.username+"__" +  str(competioncode)
 
-        new_df_train = models.File(username=current_user.username,
-                        competioncode=competioncode,
-                        filename=filename_prefix+"__train.csv"
-                        )
-        db.session.add(new_df_train)
+            df_train.to_csv('./static/uploads/'+filename_prefix+"__train.csv")
+            df_test_public.to_csv('./uploads/'+filename_prefix+"__test.csv")
+            df_test_private.to_csv('./uploads/'+filename_prefix+"__test_private.csv")
 
-        new_df_test_public = models.File(username=current_user.username,
-                        competioncode=competioncode,
-                        filename= filename_prefix+"__test.csv"
-                        )
-        db.session.add(new_df_test_public)
 
-        new_df_test_private = models.File(username=current_user.username,
-                        competioncode=competioncode,
-                        filename= filename_prefix+"__test_private.csv"
-                        )
-        db.session.add(new_df_test_private)
+            new_competition = models.Competition(competioncode=competioncode,
+                            username=current_user.username,
+                            inicio_date = form.dia_inicio.data,
+                            final_date = form.dia_fin.data,
+                            num_max_intentos = form.intentos_diarios.data,
+                            descripcion = form.descripcion.data)
+            db.session.add(new_competition)
 
-        db.session.commit()
-        flash("Competición {} creata con éxito.".format(competioncode))
-        flash('Me has enviado alguno(s) ficheros - errores: {} / correcto: {} !'.format(errors,num_files))
-#    else:
-#        return redirect(page_not_found('Tipo de llamada inexistente.'))
+            new_df_train = models.File(username=current_user.username,
+                            competioncode=competioncode,
+                            filename=filename_prefix+"__train.csv"
+                            )
+            db.session.add(new_df_train)
+
+            new_df_test_public = models.File(username=current_user.username,
+                            competioncode=competioncode,
+                            filename= filename_prefix+"__test.csv"
+                            )
+            db.session.add(new_df_test_public)
+
+            new_df_test_private = models.File(username=current_user.username,
+                            competioncode=competioncode,
+                            filename= filename_prefix+"__test_private.csv"
+                            )
+            db.session.add(new_df_test_private)
+
+            db.session.commit()
+            flash("Competición {} creata con éxito.".format(competioncode))
+            flash('Me has enviado alguno(s) ficheros - errores: {} / correcto: {} !'.format(errors,num_files))
+    #    else:
+    #        return redirect(page_not_found('Tipo de llamada inexistente.'))
 
 #    competitions = models.Competition.query.filter_by(username=current_user.username).all()
     competitions = models.Competition.query.all()
-    return render_template("upload.html", page="upload",current_user=current_user, rows=competitions)
+    return render_template("upload.html", page="upload",current_user=current_user, rows=competitions, form = form)
 
 
 @app.route('/files/<competioncode>', methods=['GET','POST'])
@@ -403,14 +412,40 @@ def uploadpredictions(competioncode):
     file_obj = request.files['file']
     if file_obj.filename == '':
         return ('ERROR: no selected file')
-
-
+    
+    
     competition = models.Competition.query.filter_by(competioncode=competioncode).first()
+    fecha_incio = competition.inicio_date
+    fecha_fin = competition.final_date
     df_private    = pd.read_csv('./uploads/{}__{}__test_private.csv'.format(competition.username,competioncode))
     df_private.columns = ['id','real']
     df_private.index = df_private.id
+    now = datetime.datetime.now()
+    print(fecha_incio.year,">", int(now.strftime("%Y")) ,fecha_incio.month, ">",int(now.strftime("%-m")),fecha_incio.day, ">",int(now.strftime("%-d")))
+    print(fecha_fin.year,"<", int(now.strftime("%Y")) ,fecha_fin.month, "<",int(now.strftime("%-m")),fecha_fin.day, "<",int(now.strftime("%-d")))
+    if(fecha_incio.year>=int(now.strftime("%Y")) and fecha_incio.month>=int(now.strftime("%-m")) and fecha_incio.day>int(now.strftime("%-d"))):
+        return ("ERROR: enviado antes de la fecha de incio")
+    if(fecha_fin.year<=int(now.strftime("%Y")) and fecha_fin.month<=int(now.strftime("%-m")) and fecha_fin.day<int(now.strftime("%-d"))):
+        return ("ERROR: enviado despues de fecha de cierre")
 #    return('len(df_private) ={}'.format(len(df_private)))
-
+    predicciones = models.Prediction.query.filter_by(competioncode = competioncode,username = API_USER_SESSION['username'])
+    cont = 0
+    for i in predicciones:
+        fecha = i.creation_date
+        print(fecha.year,"=", int(now.strftime("%Y")) ,fecha.month, "=",int(now.strftime("%-m")),fecha.day, "=",int(now.strftime("%-d")))
+        if(fecha.year==int(now.strftime("%Y")) and fecha.month==int(now.strftime("%-m")) and fecha.day==int(now.strftime("%-d"))):
+            cont += 1
+    if(cont > competition.num_max_intentos):
+        return ("ERROR: Sobrepasado el numero de intetos")
+    tiempo_seg = 1
+    seg_act = -1
+    for i in predicciones:
+        fecha = i.creation_date
+        if(fecha.year==int(now.strftime("%Y")) and fecha.month==int(now.strftime("%-m")) and fecha.day==int(now.strftime("%-d"))\
+        and fecha.hour ==int(now.strftime("%-H")) and fecha.min ==int(now.strftime("%-M")) and fecha.second <seg_act):
+                 seg_act = fecha.second
+    if(int(now.strftime("%-S")) - seg_act < tiempo_seg and sec_act != -1):
+        return ("ERROR: Intentos demasiados segidos espera un poco")
     file_path = './uploads/submission_temp.csv'
     try:
         if os.path.isfile(file_path):
