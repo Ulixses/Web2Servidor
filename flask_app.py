@@ -1,66 +1,49 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 27 13:29:32 2020
-
-@author: manoel.alonso
-"""
-
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
-
-
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-
-from flask_sqlalchemy import SQLAlchemy
 from flask_moment import Moment
 from datetime import datetime
-from flask_login import LoginManager, login_required, login_user, UserMixin, current_user
-#from flask_migrate import Migrate
+from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_mail import Mail, Message
 from sqlalchemy import desc
+from models import models
+from forms import forms
+from flask_admin import Admin,AdminIndexView
+from flask_admin.contrib.sqla import ModelView
+
 import json
 
 with open('configuration.json') as json_file:
     configuration = json.load(json_file)
 
+print("FLASK_APP.PY:", __name__)
 
-print("FLASK_APP.PY:",__name__)
-
-#########################################################
-# DB - CLASSES - START                                  #
-#########################################################
-from models import models
-
-#########################################################
-# DB - CLASSES - END                                    #
-#########################################################
-
-
-#########################################################
-# FLASK - FORMS - START                                 #
-#########################################################
-from forms import forms
-#########################################################
-# FLASK - FORMS - END                                   #
-#########################################################
 app = models.app
 db = models.db
 
+
 Bootstrap(app)
-
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./database/data.db'
-#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-
 
 moment = Moment(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-#migrate = Migrate(app,db)
+
+class AdminView(AdminIndexView):
+    def is_accessible(self):
+        if current_user.is_authenticated and current_user.type_user in {0,1}:
+            return True
+        return False
+
+
+admin = Admin(template_mode='bootstrap3', index_view=AdminView())
+
+
+admin.init_app(app)
+
 
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
@@ -97,8 +80,6 @@ user = User.query.filter_by(id=1).first()
 def load_user(user_id):
     return models.User.query.get(int(user_id))
 
-
-
 @app.route('/')
 def index():
     competiciones = models.Competition.query.all()
@@ -111,8 +92,6 @@ def login():
         if form.validate_on_submit():
             try:
                 user = models.User.query.filter_by(username=form.username.data).first()
-    #            return "usenname={}; password_bd={}; password_enviada={}".format(user.username,user.password,form.password.data)
-
                 if (user == None):
                     flash('Wrong user or password.')
                 elif  user.confirmed == 0:
@@ -132,8 +111,6 @@ import random
 @app.route('/signup', methods=['GET','POST'])
 def signup():
     form = forms.RegisterForm()
-#    form.language.choices = [('pc', 'Pascal'), ('cb', 'Cobol'),('jv', 'Java')]
-
     if request.method == 'POST':
         if form.validate_on_submit():
             try:
@@ -176,17 +153,11 @@ def confirmuser(username,userhash):
     return render_template("login.html", page="login", form=form)
 
 
-
-
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    if(current_user.type_user == 0):
-        #returnear un dashboard que pueda manejar todos los employees y hacer todo lo que hace un empleado
-        pass
-    elif(current_user.type_user ==1):
-        #returnear un dashboard que pueda crear usuarios sin confirmacion, manejar contraseñas y borrar usuarios
-        pass
+    if(current_user.type_user in [0,1]):
+        return redirect('/admin')
     elif(current_user.type_user ==2):
         user_table_creadas = models.Competition.query.filter_by(username =  current_user.username)
         user_table_jugando = models.Prediction.query.filter_by(username =  current_user.username)
@@ -240,6 +211,8 @@ import pandas as pd
 @app.route('/upload', methods=['GET','POST'])
 @login_required
 def upload():
+    if current_user.type_user != 2:
+        return redirect(url_for('dashboard'))
     if request.method == 'POST': #Recibir el fichero
         num_files = 0
         errors = 0
@@ -451,8 +424,9 @@ def uploadpredictions(competioncode):
 
 
 @app.route('/logout')
-@login_required
+#@login_required
 def logout():
+    logout_user()
     return redirect(url_for('index'))
 
 '''@app.errorhandler(404)
@@ -470,3 +444,52 @@ if __name__ == '__main__':
     app.run(debug=1)
     #app.run()
 
+#Todo lo relacionado con Admin
+from wtforms.fields import PasswordField, SelectField
+class ProtectedView(ModelView):
+    def is_accessible(self):
+        if current_user.is_authenticated and current_user.type_user in {0,1}:
+            return True
+        return False
+
+class UserAdmin(ProtectedView):
+
+    column_exclude_list = ('password')
+    form_excluded_columns = ('password')
+    column_auto_select_related = True
+    def scaffold_form(self):
+        form_class = super(UserAdmin, self).scaffold_form()
+        form_class.password2 = PasswordField('New Password')
+        return form_class
+    def on_model_change(self, form, model, is_created):
+        if len(model.password2):
+            model.password = generate_password_hash(model.password2,method='sha256')
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.type_user == 0
+
+class UserEmpleados(UserAdmin):
+
+    column_exclude_list = ('password')
+    form_excluded_columns = ('password','type_user')
+    column_auto_select_related = True
+    def scaffold_form(self):
+        form_class = super(UserEmpleados, self).scaffold_form()
+        form_class.password2 = PasswordField('New Password')
+        form_class.type_user2 = SelectField("Tipo de usuario", choices=[(2,"Desafiante"),(3,"Jugador")] ,validators = None, coerce  =  int)
+        return form_class
+    def on_model_change(self, form, model, is_created):
+        if model.type_user2 not in [2,3]:
+            delete_form()
+        else:
+            model.type_user = model.type_user2
+        if len(model.password2):
+            model.password = generate_password_hash(model.password2,method='sha256')
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.type_user == 1
+
+
+admin.add_view(UserAdmin(models.User, db.session))
+admin.add_view(UserEmpleados(models.User, db.session, endpoint="players"))
+admin.add_view(ProtectedView(models.File, db.session))
+admin.add_view(ProtectedView(models.Competition, db.session))
+admin.add_view(ProtectedView(models.Prediction, db.session))
