@@ -214,7 +214,9 @@ import pandas as pd
 @app.route('/upload', methods=['GET','POST'])
 @login_required
 def upload():
-<<<<<<< HEAD
+
+    if current_user.type_user != 2:
+        return redirect(url_for('dashboard'))
     form = forms.UploadForm()
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -301,90 +303,7 @@ def upload():
                             filename= filename_prefix+"__test_private.csv"
                             )
             db.session.add(new_df_test_private)
-=======
-    if current_user.type_user != 2:
-        return redirect(url_for('dashboard'))
-    if request.method == 'POST': #Recibir el fichero
-        num_files = 0
-        errors = 0
-        if (len(request.files.getlist('file')) != 2):
-            flash('Por favor subir 2 ficheros. El fichero de entrenamiento y el fichero de test. Usted ha subido {} ficheros.'.format(len(request.files.getlist('file'))))
-            return render_template("upload.html", page="upload",current_user=current_user)
 
-        file_obj = request.files.getlist('file')[0]
-        filename_secured = secure_filename(file_obj.filename)
-        if allowed_file(filename_secured) is False:
-            flash("Documento {} no es válido. Los documentos válidos son: {}". \
-                format(str(filename_secured), ALLOWED_EXTENSIONS))
-            errors += 1
-        else: # FICHERO APROBADO!
-            num_files += 1
-            file_path = './uploads/temp1.csv'
-            try:
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-            finally:
-                file_obj.save(file_path)
-        df1 = pd.read_csv(file_path)
-
-        file_obj = request.files.getlist('file')[1]
-        filename_secured = secure_filename(file_obj.filename)
-        if allowed_file(filename_secured) is False:
-            flash("Documento {} no es válido. Los documentos válidos son: {}". \
-                format(str(filename_secured), ALLOWED_EXTENSIONS))
-            errors += 1
-        else: # FICHERO APROBADO!
-            num_files += 1
-            file_path = './uploads/temp2.csv'
-            try:
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-            finally:
-                file_obj.save(file_path)
-        df2 = pd.read_csv(file_path)
-
-        if len(df1) > len(df2):
-            df_train, df_test = df1, df2
-        else:
-            df_train, df_test = df2, df1
-
-#        df_test_public = df_test.iloc[:,:-1]
-#        df_test_private = df_test.iloc[:,-1]
-
-        df_test_public = df_test.iloc[:,:-1]
-        df_test_private = df_test.copy().drop(columns=df_test.columns[0:-1])
-
-
-        competioncode =  ''.join(random.choice('123456789ABCDEFGHIJKLMNOPQRSTUVYXZabcdefghijklmnopqrstuvyxz') for i in range(10))
-        filename_prefix = current_user.username+"__" +  str(competioncode)
-
-        df_train.to_csv('./static/uploads/'+filename_prefix+"__train.csv")
-        df_test_public.to_csv('./uploads/'+filename_prefix+"__test.csv")
-        df_test_private.to_csv('./uploads/'+filename_prefix+"__test_private.csv")
-
-
-        new_competition = models.Competition(competioncode=competioncode,
-                        username=current_user.username)
-        db.session.add(new_competition)
-
-        new_df_train = models.File(username=current_user.username,
-                        competioncode=competioncode,
-                        filename=filename_prefix+"__train.csv"
-                        )
-        db.session.add(new_df_train)
-
-        new_df_test_public = models.File(username=current_user.username,
-                        competioncode=competioncode,
-                        filename= filename_prefix+"__test.csv"
-                        )
-        db.session.add(new_df_test_public)
-
-        new_df_test_private = models.File(username=current_user.username,
-                        competioncode=competioncode,
-                        filename= filename_prefix+"__test_private.csv"
-                        )
-        db.session.add(new_df_test_private)
->>>>>>> a870647505ddc38840cd4cd7b1d40a6504363b0b
 
             db.session.commit()
             flash("Competición {} creata con éxito.".format(competioncode))
