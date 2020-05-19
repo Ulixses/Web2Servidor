@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash
 
 import json
 from datetime import datetime
@@ -25,6 +26,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +38,7 @@ class User(UserMixin, db.Model):
     dni = db.Column(db.String(9))
     silo = db.Column(db.String(9))
     type_user = db.Column(db.Integer)#1:admin 2:empleado 3: challenger 4: player
+
 
 
 class File(UserMixin, db.Model):
@@ -65,7 +68,25 @@ class Prediction(UserMixin, db.Model):
     username = db.Column(db.String(15))
     score = db.Column(db.Float)
     metrica = db.Column(db.String(15))
+<<<<<<< HEAD
     creation_date = db.Column(db.DateTime, default=datetime.now)
 db.create_all()
+=======
+    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+@app.before_first_request
+def before_first_request():
+    db.create_all()
+    user = User.query.filter_by(username="admin").first()
+    if user == None:
+        password_hashed = generate_password_hash("admin",method='sha256')
+        admin = User(username="admin",
+                        password=password_hashed,
+                        type_user = 0,
+                        confirmed = 1)
+        db.session.add(admin)
+        db.session.commit()
+
+>>>>>>> a870647505ddc38840cd4cd7b1d40a6504363b0b
 # Ver los constraints en MYSQL:
 # SELECT * FROM   information_schema.table_constraints WHERE  table_schema = schema() AND table_name = 'predictions';
