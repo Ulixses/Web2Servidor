@@ -14,7 +14,7 @@
                     <tr>
                       <th>Código de la competición</th>
                       <th>Nombre del usuario</th>
-                      <th>Mejor score del usuario</th>
+                      <th>Score</th>
                     </tr>
                   </thead>
 
@@ -24,7 +24,7 @@
                     <tr>
                         <td><a href="/files/{{ row.competioncode }}">{{ row.competioncode }}</a></td>
                         <td>{{ row.username }}</td>
-                        <td>{{ row.max_score}}</td>
+                        <td>{{ row.score}}</td>
                     </tr>
                     {% endfor %}
                   </tbody>

@@ -23,10 +23,6 @@
                   <th>Competicion</th>
                   <th>Usuario</th>
                   <th>Score</th>
-                  <th>Fecha Inicio</th>
-                  <th>Fecha Fin</th>
-                  <th>Max Intentos</th>
-                  <th>Descripcion</th>
                 </tr>
               </thead>
               <tbody>
@@ -36,10 +32,6 @@
                         <td><a href="/files/{{ row.competioncode }}">{{ row.competioncode }}</a></td>
                         <td>{{ row.username }}</td>
                         <td>{{ row.score}}</td>
-                        <td>{{ row.inicio_date }}</td>
-                        <td>{{ row.final_date }}</td>
-                        <td>{{ row.num_max_intentos }}</td>
-                        <td>{{ row.descripcion }}</td>
                     </tr>
                 {% endfor %}
               </tbody>
