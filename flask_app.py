@@ -225,7 +225,7 @@ def upload():
             errors = 0
             if (len(request.files.getlist('file')) != 2):
                 flash('Por favor subir 2 ficheros. El fichero de entrenamiento y el fichero de test. Usted ha subido {} ficheros.'.format(len(request.files.getlist('file'))))
-                return render_template("upload.html", page="upload",current_user=current_user)
+                return render_template("upload.html", page="upload",current_user=current_user, form=form)
 
             file_obj = request.files.getlist('file')[0]
             filename_secured = secure_filename(file_obj.filename)
@@ -241,7 +241,7 @@ def upload():
                         os.remove(file_path)
                 finally:
                     file_obj.save(file_path)
-            df1 = pd.read_csv(file_path)
+                df1 = pd.read_csv(file_path)
 
             file_obj = request.files.getlist('file')[1]
             filename_secured = secure_filename(file_obj.filename)
@@ -257,8 +257,13 @@ def upload():
                         os.remove(file_path)
                 finally:
                     file_obj.save(file_path)
-            df2 = pd.read_csv(file_path)
+                df2 = pd.read_csv(file_path)
 
+            if errors != 0:
+                flash('Me has enviado alguno(s) ficheros - errores: {} / correcto: {} !'.format(errors,num_files))
+                competitions = models.Competition.query.all()
+                return render_template("upload.html", page="upload",current_user=current_user, rows=competitions, form = form)
+                
             if len(df1) > len(df2):
                 df_train, df_test = df1, df2
             else:

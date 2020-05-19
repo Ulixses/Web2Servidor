@@ -14,6 +14,7 @@
                         <form action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
                     <input type="file" name="file" id="fileInput" class="button2" accept=".csv" capture multiple><br><br>
                   </div>
+                    {{ form.hidden_tag() }}
                     {{ wtf.form_field(form.descripcion) }}
                     {{ wtf.form_field(form.intentos_diarios) }}
                     {{ wtf.form_field(form.dia_inicio)}}
