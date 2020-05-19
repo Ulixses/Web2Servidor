@@ -422,6 +422,8 @@ def uploadpredictions(competioncode):
     seg_act = -1
     for i in predicciones:
         fecha = i.creation_date
+        print(fecha.year,">", int(now.strftime("%Y")) ,fecha.month, ">",int(now.strftime("%-m")),fecha.day, ">",int(now.strftime("%-d")), fecha.hour , ">",int(now.strftime("%-H")), fecha.min , ">",int(now.strftime("%-M")), fecha.second , ">", seg_act)
+
         print("Fechas 1:", now, fecha)
         if(fecha.year==int(now.strftime("%Y")) and fecha.month==int(now.strftime("%-m")) and fecha.day==int(now.strftime("%-d"))\
         and fecha.hour ==int(now.strftime("%-H")) and fecha.min ==int(now.strftime("%-M")) and fecha.second > seg_act):
