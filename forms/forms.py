@@ -17,9 +17,7 @@ class LoginForm(FlaskForm):
 
 class RegisterForm(FlaskForm):
     username = StringField('Nombre de usuario', validators=[InputRequired(),
-                                                            Length(min=4, max=15),
-                                                            NoneOf(['pepito','juanito'],
-                                                            message='Usuario ya existe')])
+                                                            Length(min=4, max=15),])
 
     password = PasswordField('Contraseña',validators=[InputRequired(), Length(min=8, max=80)])
 

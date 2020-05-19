@@ -12,7 +12,6 @@
 
       <form class="form-signin" method="POST" action="{{url_for('login')}}">
         <h2 class="form-signin-heading">Por favor inicia sesión</h2>
-        {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
         {{ wtf.form_field(form.password) }}
         {{ wtf.form_field(form.remember) }}
