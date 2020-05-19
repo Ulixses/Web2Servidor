@@ -1,12 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SelectField,MultipleFileField,IntegerField#,DateField
 from wtforms.validators import InputRequired, Length, Email, NoneOf, Regexp
-<<<<<<< HEAD
+
 from wtforms.fields.html5 import DateField
-=======
 
 
->>>>>>> a870647505ddc38840cd4cd7b1d40a6504363b0b
+
+
 class LoginForm(FlaskForm):
     username = StringField('Nombre de usuario', validators=[InputRequired(), Length(min=4, max=15)])
 
