@@ -68,11 +68,10 @@ class Prediction(UserMixin, db.Model):
     username = db.Column(db.String(15))
     score = db.Column(db.Float)
     metrica = db.Column(db.String(15))
-<<<<<<< HEAD
     creation_date = db.Column(db.DateTime, default=datetime.now)
-db.create_all()
-=======
-    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+
 
 @app.before_first_request
 def before_first_request():
@@ -87,6 +86,5 @@ def before_first_request():
         db.session.add(admin)
         db.session.commit()
 
->>>>>>> a870647505ddc38840cd4cd7b1d40a6504363b0b
 # Ver los constraints en MYSQL:
 # SELECT * FROM   information_schema.table_constraints WHERE  table_schema = schema() AND table_name = 'predictions';
