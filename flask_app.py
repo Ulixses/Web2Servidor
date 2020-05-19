@@ -425,7 +425,7 @@ def uploadpredictions(competioncode):
         if(fecha.year==int(now.strftime("%Y")) and fecha.month==int(now.strftime("%-m")) and fecha.day==int(now.strftime("%-d"))\
         and fecha.hour ==int(now.strftime("%-H")) and fecha.min ==int(now.strftime("%-M")) and fecha.second <seg_act):
                  seg_act = fecha.second
-    if(int(now.strftime("%-S")) - seg_act < tiempo_seg and sec_act != 100):
+    if(int(now.strftime("%-S")) - seg_act < tiempo_seg and seg_act != 100):
         return ("ERROR: Intentos demasiados segidos espera un poco")
     file_path = './uploads/submission_temp.csv'
     try:
