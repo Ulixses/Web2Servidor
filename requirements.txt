@@ -17,4 +17,4 @@ flask_login
 flask_mail
 pandas
 sklearn
-flask_admin
+Flask-Admin==1.5.6

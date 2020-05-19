@@ -4,7 +4,7 @@ from flask_bootstrap import Bootstrap
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from flask_moment import Moment
-from datetime import datetime
+
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_mail import Mail, Message
 from sqlalchemy import desc
@@ -30,7 +30,7 @@ moment = Moment(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-
+user_type =["admin","empleado","desafiante","jugador" ]
 
 class AdminView(AdminIndexView):
     def is_accessible(self):
@@ -181,7 +181,8 @@ def profile():
         form = forms.ProfileForm(username=user.username,
                             email=user.email,
                             dni  = user.dni,
-                            silo = user.silo)
+                            silo = user.silo,
+                            type_user = user_type[user.type_user])
     elif request.method == 'POST':  # Actualizar los datos del usuario
         form = forms.ProfileForm()
         if form.validate_on_submit():
@@ -387,8 +388,8 @@ def uploadpredictions(competioncode):
     file_obj = request.files['file']
     if file_obj.filename == '':
         return ('ERROR: no selected file')
-    
-    
+
+
     competition = models.Competition.query.filter_by(competioncode=competioncode).first()
     fecha_incio = competition.inicio_date
     fecha_fin = competition.final_date

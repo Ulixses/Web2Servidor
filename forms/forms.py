@@ -49,6 +49,7 @@ class ProfileForm(FlaskForm):
 
     silo = StringField('Grupo asignado',validators=[InputRequired(),
                                              Length(max=9)])
+    type_user = StringField("Tipo de usuario")
 class UploadForm(FlaskForm):
     descripcion = StringField('Descripcion',validators= None)
     intentos_diarios = IntegerField('Intentos diarios' ,validators= None)
