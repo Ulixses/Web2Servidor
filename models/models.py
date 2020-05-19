@@ -40,7 +40,6 @@ class User(UserMixin, db.Model):
     type_user = db.Column(db.Integer)#1:admin 2:empleado 3: challenger 4: player
 
 
-
 class File(UserMixin, db.Model):
     __tablename__ = 'files'
     id = db.Column(db.Integer, primary_key=True)

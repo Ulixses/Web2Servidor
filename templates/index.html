@@ -13,24 +13,30 @@
         <div class="starter-template">
             <h1> Competiciones</h1>
         </div>
-
-        
-        <div class="row">
-            {% for competicion in competiciones %}
-            <li><a href="{{url_for('.ranking', competioncode = competicion.competioncode ) }}"> id: {{ competicion.competioncode }} username: {{ competicion.username }} codigo: {{ competicion.competioncode }} </a></li>
-            {% endfor %}
-
-        </div>
-        <br>
-        <br>
-        <div class="row">
-            <p>Acepto sugerencias y colaboraradores que se interesen en apoyarme con la extracción de datos de Esri.</p>
-             <ul>
-              <li>vídeo: <a href="https://www.youtube.com/watch?v=vnCffCH0Kxc">https://www.youtube.com/watch?v=vnCffCH0Kxc</a></li>
-              <li>Esri: <a href="https://comunidadcovid.maps.arcgis.com/home/index.html">https://comunidadcovid.maps.arcgis.com/home/index.html</a></li>
-            </ul>
-
-            <p>Contacto: Prof. Manoel Gadi - manoel.alonso@u-tad.com </p>
-        </div>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Competicion</th>
+                <th>Usuario</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Max Intentos</th>
+                <th>Descripcion</th>
+              </tr>
+            </thead>
+            <tbody>
+             
+                {% for row in competiciones %}
+                  <tr>
+                      <td><a href="{{url_for('.ranking', competioncode = row.competioncode ) }}">{{ row.competioncode }}</td>
+                      <td>{{ row.username }}</td>
+                      <td>{{ row.inicio_date }}</td>
+                      <td>{{ row.final_date }}</td>
+                      <td>{{ row.num_max_intentos }}</td>
+                      <td>{{ row.descripcion }}</td>
+                  </tr>
+              {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock content %}
