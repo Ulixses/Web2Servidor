@@ -419,13 +419,13 @@ def uploadpredictions(competioncode):
     if(cont >= competition.num_max_intentos):
         return ("ERROR: Sobrepasado el numero de intetos")
     tiempo_seg = 10
-    seg_act = -1
+    seg_act = 100
     for i in predicciones:
         fecha = i.creation_date
         if(fecha.year==int(now.strftime("%Y")) and fecha.month==int(now.strftime("%-m")) and fecha.day==int(now.strftime("%-d"))\
         and fecha.hour ==int(now.strftime("%-H")) and fecha.min ==int(now.strftime("%-M")) and fecha.second <seg_act):
                  seg_act = fecha.second
-    if(int(now.strftime("%-S")) - seg_act < tiempo_seg and sec_act != -1):
+    if(int(now.strftime("%-S")) - seg_act < tiempo_seg and sec_act != 100):
         return ("ERROR: Intentos demasiados segidos espera un poco")
     file_path = './uploads/submission_temp.csv'
     try:
