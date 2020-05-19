@@ -416,9 +416,9 @@ def uploadpredictions(competioncode):
         print(fecha.year,"=", int(now.strftime("%Y")) ,fecha.month, "=",int(now.strftime("%-m")),fecha.day, "=",int(now.strftime("%-d")))
         if(fecha.year==int(now.strftime("%Y")) and fecha.month==int(now.strftime("%-m")) and fecha.day==int(now.strftime("%-d"))):
             cont += 1
-    if(cont > competition.num_max_intentos):
+    if(cont >= competition.num_max_intentos):
         return ("ERROR: Sobrepasado el numero de intetos")
-    tiempo_seg = 1
+    tiempo_seg = 10
     seg_act = -1
     for i in predicciones:
         fecha = i.creation_date
