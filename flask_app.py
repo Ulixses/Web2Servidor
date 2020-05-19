@@ -83,7 +83,7 @@ def load_user(user_id):
 @app.route('/')
 def index():
     competiciones = models.Competition.query.all()
-    return render_template("index.html", page="index", current_time=datetime.utcnow(), competiciones = competiciones)
+    return render_template("index.html", page="index", current_time=datetime.datetime.now(), competiciones = competiciones)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
