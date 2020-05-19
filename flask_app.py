@@ -422,11 +422,11 @@ def uploadpredictions(competioncode):
     seg_act = -1
     for i in predicciones:
         fecha = i.creation_date
-        print(fecha.year,">", int(now.strftime("%Y")) ,fecha.month, ">",int(now.strftime("%-m")),fecha.day, ">",int(now.strftime("%-d")), fecha.hour , ">",int(now.strftime("%-H")), fecha.min , ">",int(now.strftime("%-M")), fecha.second , ">", seg_act)
+        print(fecha.year,">", int(now.strftime("%Y")) ,fecha.month, ">",int(now.strftime("%-m")),fecha.day, ">",int(now.strftime("%-d")), fecha.hour , ">",int(now.strftime("%-H")), fecha.minute , ">",int(now.strftime("%-M")), fecha.second , ">", seg_act)
 
         print("Fechas 1:", now, fecha)
         if(fecha.year==int(now.strftime("%Y")) and fecha.month==int(now.strftime("%-m")) and fecha.day==int(now.strftime("%-d"))\
-        and fecha.hour ==int(now.strftime("%-H")) and fecha.min ==int(now.strftime("%-M")) and fecha.second > seg_act):
+        and fecha.hour ==int(now.strftime("%-H")) and fecha.minute ==int(now.strftime("%-M")) and fecha.second > seg_act):
                  seg_act = fecha.second
     print("Fechas 2:", int(now.strftime("%-S")), seg_act)
     if(int(now.strftime("%-S")) - seg_act < tiempo_seg and seg_act != -1):
