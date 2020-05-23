@@ -1,6 +1,6 @@
 {% extends "bootstrap/mybase_online.html" %}
 
-{% block title %} Subir Documento {% endblock title %}
+{% block title %} Archivos {% endblock title %}
 
 
 {% block content %}
@@ -27,7 +27,7 @@
                                 <td>{{ row.id }}</td>
                                 <td>{{ row.username }}</td>
                                 <td><a href="/files/{{ row.competioncode }}">{{ row.competioncode }}</a></td>
-                                    <td><a href="/static/uploads/{{ row.filename  }}">{{ row.filename }}</a></td>
+                                <td><a href="/static/uploads/{{ row.filename  }}">{{ row.filename }}</a></td>
                                 <td>{{ row.creation_date }}</td>
                             </tr>
                         {% endif %}

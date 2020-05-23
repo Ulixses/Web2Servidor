@@ -24,10 +24,6 @@ class RegisterForm(FlaskForm):
     email = StringField('E-mail',validators=[InputRequired(), Email(message='Email inválido') ,
                                              Length(max=50)])
 
-    dni = StringField('DNI o un NIE',validators=[InputRequired(),
-                                             Length(max=9),
-                                             Regexp('^([a-z]|[A-Z]|[0-9])[0-9]{7}[a-zA-Z]$')])
-
     type_user = SelectField("Tipo de usuario", choices=[(2,"Desafiante"),(3,"Jugador")] ,validators = None, coerce  =  int)
 
 
@@ -41,18 +37,19 @@ class ProfileForm(FlaskForm):
 
     password = PasswordField('Contraseña')
 
-    dni = StringField('DNI o un NIE',validators=[InputRequired(),
-                                             Length(max=9),
-                                             Regexp('^([a-z]|[A-Z]|[0-9])[0-9]{7}[a-zA-Z]$')])
-
-    silo = StringField('Grupo asignado',validators=[InputRequired(),
-                                             Length(max=9)])
     type_user = StringField("Tipo de usuario")
     
 class UploadForm(FlaskForm):
+
     descripcion = StringField('Descripcion',validators= None)
+
     intentos_diarios = IntegerField('Intentos diarios' ,validators= None)
+
     dia_inicio = DateField('Dia de inicio',validators= None)
+
     dia_fin = DateField('Dia de fin',validators= None)
+
+    intervalo_subida = IntegerField('Intervalo minimo de subida(segundos)' ,validators= None)
+
 
 

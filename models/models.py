@@ -35,8 +35,6 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(80))
     confirmed = db.Column(db.Integer, default=0)
     userhash = db.Column(db.String(50))
-    dni = db.Column(db.String(9))
-    silo = db.Column(db.String(9))
     type_user = db.Column(db.Integer)#1:admin 2:empleado 3: challenger 4: player
 
 
@@ -57,6 +55,7 @@ class Competition(UserMixin, db.Model):
     creation_date = db.Column(db.DateTime, default=datetime.now)
     inicio_date = db.Column(db.DateTime)
     final_date = db.Column(db.DateTime)
+    intervalo_subida = db.Column(db.Integer)
     num_max_intentos = db.Column(db.Integer)
     descripcion = db.Column(db.String(1000))
 

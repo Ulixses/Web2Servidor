@@ -19,6 +19,7 @@
                     {{ wtf.form_field(form.intentos_diarios) }}
                     {{ wtf.form_field(form.dia_inicio)}}
                     {{ wtf.form_field(form.dia_fin) }}
+                    {{ wtf.form_field(form.intervalo_subida) }}
                             <input type="submit" value="Subir" class="button3">
                         </form>
             </div>
@@ -39,6 +40,7 @@
                       <th>Fecha Fin</th>
                       <th>Max Intentos</th>
                       <th>Descripcion</th>
+                      <th>Intervalo de subida</th>
                     </tr>
                   </thead>
 
@@ -55,6 +57,7 @@
                         <td>{{ row.final_date }}</td>
                         <td>{{ row.num_max_intentos }}</td>
                         <td>{{ row.descripcion }}</td>
+                        <td>{{ row.intervalo_subida }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>

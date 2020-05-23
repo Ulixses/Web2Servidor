@@ -120,9 +120,7 @@ def signup():
                                 email=form.email.data,
                                 password=password_hashed,
                                 userhash=str(random.getrandbits(128)),
-                                dni=form.dni.data,
-                                type_user = int(form.type_user.data),
-                                silo=form.dni.data[3])
+                                type_user = int(form.type_user.data))
                 print(form.type_user)
                 print("modelo introducido bd")
                 send_email(new_user.email,'Por favor, confirmar correo.','mail/new_user',user=new_user,url=request.host)
@@ -180,8 +178,6 @@ def profile():
         user = models.User.query.filter_by(username=current_user.username).first()
         form = forms.ProfileForm(username=user.username,
                             email=user.email,
-                            dni  = user.dni,
-                            silo = user.silo,
                             type_user = user_type[user.type_user])
     elif request.method == 'POST':  # Actualizar los datos del usuario
         form = forms.ProfileForm()
@@ -192,7 +188,6 @@ def profile():
                 return redirect(url_for('index'))
             user = models.User.query.filter_by(username=current_user.username).first()
             user.email = form.email.data
-            user.dni = form.dni.data
             if form.password.data != '':
                 user.password = generate_password_hash(form.password.data,method='sha256')
             db.session.commit()
@@ -288,6 +283,7 @@ def upload():
                             username=current_user.username,
                             inicio_date = form.dia_inicio.data,
                             final_date = form.dia_fin.data,
+                            intervalo_subida = form.intervalo_subida.data,
                             num_max_intentos = form.intentos_diarios.data,
                             descripcion = form.descripcion.data)
             db.session.add(new_competition)
@@ -342,11 +338,12 @@ def code(competioncode):
 
 
 @app.route('/ranking/<competioncode>', methods=['GET'])
-@login_required
 def ranking(competioncode):
+    files = models.File.query.filter_by(competioncode=competioncode).first()
     best_predictions = models.Prediction.query.filter_by(competioncode=competioncode).order_by(desc(models.Prediction.score)).all()
+    competicion = models.Competition.query.filter_by(competioncode=competioncode).first()
     print(best_predictions)
-    return render_template("ranking.html", page="ranking",current_user=current_user, rows=best_predictions)
+    return render_template("ranking.html", page="ranking",current_user=current_user, rows=best_predictions, file=files, competicion=competicion )
 
 
 
@@ -418,7 +415,7 @@ def uploadpredictions(competioncode):
             cont += 1
     if(cont >= competition.num_max_intentos):
         return ("ERROR: Sobrepasado el numero de intetos")
-    tiempo_seg = 10
+    tiempo_seg = int(competition.intervalo_subida)
     seg_act = -1
     for i in predicciones:
         fecha = i.creation_date
@@ -534,9 +531,12 @@ class UserEmpleados(UserAdmin):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.type_user == 1
 
+from flask_admin.menu import MenuLink
 
 admin.add_view(UserAdmin(models.User, db.session))
 admin.add_view(UserEmpleados(models.User, db.session, endpoint="players"))
 admin.add_view(ProtectedView(models.File, db.session))
 admin.add_view(ProtectedView(models.Competition, db.session))
 admin.add_view(ProtectedView(models.Prediction, db.session))
+admin.add_link(MenuLink(name='Logout',category="", url='/logout'))
+admin.add_link(MenuLink(name='Go back',category="", url='/'))

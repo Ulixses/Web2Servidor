@@ -12,7 +12,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Desescalada Ordenada - Creando silos / salvando vidas.</a>
+          <a class="navbar-brand" href="/">UliGra - Kaggle</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -20,6 +20,9 @@
             <li class="{{'active' if page == 'login'}}"><a href="{{ url_for('login') }}">Iniciar sesión</a></li>
             <li class="{{'active' if page == 'signup'}}"><a href="{{ url_for('signup') }}">Regístrate</a></li>
             <li class="{{'active' if page == 'logout'}}"><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% if current_user is defined and current_user.type_user == 0 or current_user.type_user == 1 %}
+              <li><a href="/admin">Admin</a></li> 
+            {% endif %}
           </ul>
         </div><!--/.nav-collapse -->
       </div>

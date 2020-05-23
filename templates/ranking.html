@@ -1,12 +1,26 @@
 {% extends "bootstrap/mybase_online.html" %}
 
-{% block title %} Subir Documento {% endblock title %}
+{% block title %} Ranking {% endblock title %}
 
 
 {% block content %}
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <div class="row panel panel-default panel-primary">
+            <div class="panel-heading"><h3>Usuario desafiante: {{competicion.username }}</h3></div>
+            <div class="panel-body">
+              <h4>Descripción: {{competicion.descripcion }}</h4>
+              <h4>Número máximo de intentos: {{competicion.num_max_intentos }}</h4>
+              <h4>Fecha de creación: {{competicion.creation_date }}</h4>
+              <h4>Fecha de inicio: {{competicion.inicio_date}}</h4>
+              <h4>Fecha de fin: {{competicion.final_date }}</h4>
+              <h4>Tiempo maximo entre subidas: {{competicion.intervalo_subida }} s</h4>
+              <h4><a href="/code/{{ competicion.competioncode }}.py " download>Codigo para competir(.py)</a></h4>
+              <h4><a href="/static/uploads/{{ file.filename}}">Dataset(.csv)</a></h4>
+            </div>
+          </div>         
+
 
               <div class="table-responsive">
                 <table id="myTable" class="table table-striped">
@@ -15,6 +29,8 @@
                       <th>Código de la competición</th>
                       <th>Nombre del usuario</th>
                       <th>Score</th>
+                      <th>Métrica</th>
+                      <th>Fecha de envio</th>
                     </tr>
                   </thead>
 
@@ -25,6 +41,8 @@
                         <td><a href="/files/{{ row.competioncode }}">{{ row.competioncode }}</a></td>
                         <td>{{ row.username }}</td>
                         <td>{{ row.score}}</td>
+                        <td>{{ row.metrica}}</td>
+                        <td>{{ row.creation_date}}</td>
                     </tr>
                     {% endfor %}
                   </tbody>

@@ -1,6 +1,6 @@
 {% extends "bootstrap/mybase_offline.html" %}
 
-{% block title %} Desescalada Ordenada {% endblock title %}
+{% block title %} UliGra - Kaggle {% endblock title %}
 
 {% block styles %}
 {{ super() }}
@@ -22,6 +22,7 @@
                 <th>Fecha Fin</th>
                 <th>Max Intentos</th>
                 <th>Descripcion</th>
+                <th>Intervalo de subida</th>
               </tr>
             </thead>
             <tbody>
@@ -34,6 +35,7 @@
                       <td>{{ row.final_date }}</td>
                       <td>{{ row.num_max_intentos }}</td>
                       <td>{{ row.descripcion }}</td>
+                      <td>{{ row.intervalo_subida }} s</td>
                   </tr>
               {% endfor %}
             </tbody>
