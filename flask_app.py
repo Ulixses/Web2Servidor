@@ -275,7 +275,7 @@ def upload():
             filename_prefix = current_user.username+"__" +  str(competioncode)
 
             df_train.to_csv('./static/uploads/'+filename_prefix+"__train.csv")
-            df_test_public.to_csv('./uploads/'+filename_prefix+"__test.csv")
+            df_test_public.to_csv('./static/uploads/'+filename_prefix+"__test.csv")
             df_test_private.to_csv('./uploads/'+filename_prefix+"__test_private.csv")
 
 
