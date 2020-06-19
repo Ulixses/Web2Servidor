@@ -1,5 +1,5 @@
 import os
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, send_from_directory
 from flask_bootstrap import Bootstrap
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -15,6 +15,7 @@ from flask_admin.contrib.sqla import ModelView
 
 import json
 import datetime
+from random import randrange
 with open('configuration.json') as json_file:
     configuration = json.load(json_file)
 
@@ -83,7 +84,32 @@ def load_user(user_id):
 @app.route('/')
 def index():
     competiciones = models.Competition.query.all()
-    return render_template("index.html", page="index", current_time=datetime.datetime.now(), competiciones = competiciones)
+    return render_template("index_react.html", page="index", current_time=datetime.datetime.now(), competiciones = competiciones)
+
+@app.route('/competiciones')
+def competiciones():
+    competiciones = models.Competition.query.limit(9).all()
+    comp_json = []
+    numbers = [0]
+    for row in competiciones:
+        i = 0
+        while i in numbers:
+            i = randrange(0,15)
+        numbers.append(i)
+        comp_json.append(
+            {
+                "code": row.competioncode,
+                "descripcion": row.descripcion,
+                "username": row.username,
+                "number" : i
+            }
+        )
+    print (numbers)
+    return jsonify(comp_json)
+
+@app.route('/images/<image>')
+def images(image):
+    return send_from_directory('./static/images', image)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
