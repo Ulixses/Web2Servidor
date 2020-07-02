@@ -1,0 +1,75 @@
+.desc{
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+    padding: 32px;
+    border-radius: 5%;
+    background-color: aliceblue;
+}
+
+.formulario{
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+    height: 100%;
+    padding: 16px;
+    border-radius: 5%;
+    background-color: aliceblue;
+
+}
+
+.top-info h3, .bot-info h3{
+    text-align: center;
+}
+
+.top-info div , .bot-info div{
+    word-wrap: break-word;
+}
+
+.desc h1{
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.desc h1,.desc h2{
+    font-family: 'Montserrat', sans-serif;
+}
+
+.desc h3{
+    font-size: 32px;
+    line-height: 1em;
+    margin-top: 16px;
+    font-family: 'roboto';
+}
+
+.uli-table th{
+    text-align: center;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.uli-table tbody tr:hover{
+    background-color: rgba(51, 122, 183, 0.39) !important;
+    transition: 0.3s ease;
+    box-shadow:0px 0px 16px rgba(51, 122, 183, 0.39);
+    color: #fff;
+
+}
+.uli-table tbody tr:hover a{
+    color: #fff;
+}
+
+.uli-table tbody tr{
+    text-align: center;
+}
+
+td a {
+    width: auto;
+    height: auto;
+    display: block;
+    padding: 3px;
+  }
+td.big-link{
+    vertical-align: middle
+}
+
+body{
+    overflow-x: hidden;
+}

@@ -1,0 +1,119 @@
+{% extends "bootstrap/mybase_online.html" %}
+
+{% block title %} Subir Documento {% endblock title %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('.static',filename='upload.css')}}"> 
+{% endblock styles %}
+
+{% block content %}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-25 col-md-offset-2 main">
+            <div class="container" style="margin:0; padding:0; width: 100%;">
+              <div class="row">
+                <div class="col-md-3 formulario">
+                  <div id="box">
+                    <div id="drop-mask"></div>
+                    <h4>Suba el fichero de entrenamiento y el fichero de test para crear la competcion: </h4>
+                    <form action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
+                    <label for="fileInput" class="custom-file-upload">
+                        <i class="fa fa-file-code-o"></i> Selecciona los archivos
+                    </label>
+                    <input type="file" name="file" id="fileInput" class="button2" accept=".csv" capture multiple>
+                    <br><br>
+
+                  </div>
+                  {{ form.hidden_tag() }}
+                  {{ wtf.form_field(form.descripcion) }}
+                  {{ wtf.form_field(form.intentos_diarios) }}
+                  {{ wtf.form_field(form.dia_inicio)}}
+                  {{ wtf.form_field(form.dia_fin) }}
+                  {{ wtf.form_field(form.intervalo_subida) }}
+                  <center>
+                    <input type="submit" value="Subir" class="button3 btn btn-primary">
+                  </center>
+                  
+                  </form>
+                </div>
+                <div class="col-md-8 col-md-offset-1 desc">
+                    <h1 class="desc-ti">Conviertete en el maestro de los datasets</h1>
+                    <h2>¿Que ficheros necesita una competicion?</h2>
+                    <p>Tienes que subir 2 datasets, el primero se entregara a los competidores
+                        y el segundo sera usado para evaluarlo.
+                        Es importante que los ficheros tengan formato csv.
+                    </p>
+                    <h2>¿Que es el intervalo de subida?</h2>
+                    <p>El intervalo de subida es un numero que suamos para que los competdiores no puedan hacer muchos ententos seguidos.
+                        De esta forma evitamos sobrecargar el servidor y crear una competición justa para todos.
+                    </p>
+                    <h2>¿Porque es importante los intentos diarios?</h2>
+                    <p>Una de las claves del machine learning es la prueba y error, por ellos queremos que el desafienate escoja 
+                        este factor para su competicion. No queremos que nuestros competidores
+                        esten en desventaja con gente que puede hacer mas subidas en un dia y por ello limitamos las capacidades de los 
+                        competidores en este aspecto.
+                    </p>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+<script>
+
+    var drag_over = function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+		$('#box').addClass('hover');
+		$('#drop-mask').show();
+    };
+    var drag_leave = function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+		$('#box').removeClass('hover');
+		$('#drop-mask').hide();
+    };
+
+
+	var drag_drop = function(e){
+        e.stopPropagation();
+        e.preventDefault();
+		$('#box').removeClass('hover');
+		$('#drop-mask').hide();
+        fileInput.files = e.dataTransfer.files;
+	};
+
+    var overArea = document.getElementById('box');
+    var dropMask = document.getElementById('drop-mask');
+
+	overArea.addEventListener('dragover', drag_over, false);
+	dropMask.addEventListener('dragleave', drag_leave, false);
+    dropMask.addEventListener('drop', drag_drop, false);
+</script>
+
+
+<style>
+#box {
+    /* width:400px;
+    height:200px; */
+    /* border:10px dashed lightgray; */
+    margin:0px;
+}
+
+#box.hover {
+    background:#eee;
+    border:10px dashed #F00;
+}
+
+#drop-mask {
+    position:absolute;
+    width:410px;
+    height:210px;
+    z-index:999999;
+    display:none;
+    margin:0px;
+}
+
+</style>
+{% endblock content %}

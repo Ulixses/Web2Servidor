@@ -1,0 +1,30 @@
+{% extends "bootstrap/mybase_offline.html" %}
+
+{% block title %} Regístro {% endblock title %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('.static',filename='signin.css')}}">
+<link rel="stylesheet" href="{{url_for('.static',filename='login.css')}}">
+
+{% endblock styles %}
+
+{% block content %}
+
+	<div class="login_container">
+		<div class="top"></div>
+		<div class="bottom"></div>
+		<div class="center">
+			<form class="form-signin" method="POST" action="{{url_for('signup')}}">
+				<h2 class="form-signin-heading">Por  favor  regístrate</h2>
+				{{ form.hidden_tag() }}
+				{{ wtf.form_field(form.username) }}
+				{{ wtf.form_field(form.email) }}
+				{{ wtf.form_field(form.password) }}
+				{{ wtf.form_field(form.type_user) }}
+				<button class="btn btn-lg btn-primary btn-block" type="submit">Registrarse</button>
+			</form>
+			<h2>&nbsp;</h2>
+		</div>
+	</div> <!-- /container -->
+{% endblock content %}

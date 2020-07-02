@@ -84,32 +84,50 @@ def load_user(user_id):
 @app.route('/')
 def index():
     competiciones = models.Competition.query.all()
-    return render_template("index_react.html", page="index", current_time=datetime.datetime.now(), competiciones = competiciones)
+    return render_template("react/index_react.html", page="index", current_time=datetime.datetime.now(), competiciones = competiciones)
+
+###############################################################################################################
+#         REACT-IMPROVEMENTS                                                                         START    #
+###############################################################################################################
 
 @app.route('/competiciones')
 def competiciones():
-    competiciones = models.Competition.query.limit(9).all()
+    competiciones = models.Competition.query.all()
     comp_json = []
     numbers = [0]
     for row in competiciones:
         i = 0
+        score = " - "
         while i in numbers:
             i = randrange(0,15)
         numbers.append(i)
+        total = models.Prediction.query.filter_by(competioncode = row.competioncode).count()
+        max_score = models.Prediction.query.filter_by(competioncode = row.competioncode).order_by(models.Prediction.score.desc()).first()
+        if(type(max_score) != type(None)):
+            score = round(max_score.score,1)
         comp_json.append(
             {
                 "code": row.competioncode,
                 "descripcion": row.descripcion,
                 "username": row.username,
-                "number" : i
+                "number" : i,
+                "fin" :  row.final_date.strftime("%d-%m-%Y"),
+                "total": total,
+                "max_score" : score
             }
         )
-    print (numbers)
+    print(comp_json)
+    users_first = models.Prediction.query.filter_by(competioncode = comp_json[0]["code"]).all()
+    print([i.username for i in users_first])
     return jsonify(comp_json)
 
 @app.route('/images/<image>')
 def images(image):
     return send_from_directory('./static/images', image)
+
+###############################################################################################################
+#         REACT-IMPROVEMENTS                                                                          END     #
+###############################################################################################################
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -131,7 +149,7 @@ def login():
                 flash('Access denied - wrong username or password')
     else:
         pass
-    return render_template("login.html",page="login", form=form)
+    return render_template("react/login_react.html",page="login", form=form)
 
 import random
 @app.route('/signup', methods=['GET','POST'])
@@ -159,7 +177,7 @@ def signup():
             except:
                 db.session.rollback()
                 flash("Something went wrong. User has not been created. Please try again.")
-    return render_template("signup.html", page="signup", form=form)
+    return render_template("react/signup_react.html", page="signup", form=form)
 
 @app.route('/confirmuser/<username>/<userhash>', methods=['GET'])
 def confirmuser(username,userhash):
@@ -220,7 +238,18 @@ def profile():
             flash('Datos actualizados con exito')
     else:
         return redirect(page_not_found('Tipo de llamada inexistente.'))
-    return render_template("profile.html", page="profile",current_user=current_user, form=form)
+    competitions = models.Competition.query.all()
+    datos = {}
+    if current_user.type_user == 2:
+        datos["comp_total"] = models.Competition.query.filter_by(username=current_user.username).count()
+    elif  current_user.type_user == 3:
+        pass
+    datos["pred_total"] = models.Prediction.query.filter_by(username=current_user.username).count()
+    datos["part_total"] = models.Prediction.query.with_entities(models.Prediction.competioncode).filter_by(username=current_user.username).distinct().count()
+    datos["max_score"] = models.Prediction.query.filter_by(username=current_user.username).order_by(models.Prediction.score.desc()).first().score
+    if type(datos["max_score"]) == type(None):
+        datos["max_score"] = 0
+    return render_template("profile.html", page="profile",current_user=current_user, form=form, rows=competitions, data=datos)
 
 
 ### FILE MANAGER  - START
@@ -339,9 +368,9 @@ def upload():
     #    else:
     #        return redirect(page_not_found('Tipo de llamada inexistente.'))
 
-#    competitions = models.Competition.query.filter_by(username=current_user.username).all()
+    #competitions = models.Competition.query.filter_by(username=current_user.username).all()
     competitions = models.Competition.query.all()
-    return render_template("upload.html", page="upload",current_user=current_user, rows=competitions, form = form)
+    return render_template("react/upload_react.html", page="upload",current_user=current_user, rows=competitions, form = form)
 
 
 @app.route('/files/<competioncode>', methods=['GET','POST'])

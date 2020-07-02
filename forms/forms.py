@@ -8,21 +8,23 @@ from wtforms.fields.html5 import DateField
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Nombre de usuario', validators=[InputRequired(), Length(min=4, max=15)])
+    username = StringField('Nombre de usuario', validators=[InputRequired(), Length(min=4, max=15)], render_kw={"placeholder": "usuario"})
 
-    password = PasswordField('Contraseña', validators=[InputRequired(), Length(min=4, max=80)])
+    password = PasswordField('Contraseña', validators=[InputRequired(), Length(min=4, max=80)], render_kw={"placeholder": "contraseña"})
 
-    remember = BooleanField('Recuérdame')
+    remember = BooleanField('Recuérdame:')
 
 
 class RegisterForm(FlaskForm):
     username = StringField('Nombre de usuario', validators=[InputRequired(),
-                                                            Length(min=4, max=15),])
+                                                            Length(min=4, max=15),],
+                                                            render_kw={"placeholder": "usuario"})
 
-    password = PasswordField('Contraseña',validators=[InputRequired(), Length(min=8, max=80)])
+    password = PasswordField('Contraseña',validators=[InputRequired(), Length(min=8, max=80)],
+                                                        render_kw={"placeholder": "contraseña"})
 
     email = StringField('E-mail',validators=[InputRequired(), Email(message='Email inválido') ,
-                                             Length(max=50)])
+                                             Length(max=50)], render_kw={"placeholder": "email"})
 
     type_user = SelectField("Tipo de usuario", choices=[(2,"Desafiante"),(3,"Jugador")] ,validators = None, coerce  =  int)
 
