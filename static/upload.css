@@ -1,0 +1,54 @@
+#box {
+    width: 100%;
+}
+
+.panel{
+    height: 100%;
+}
+
+.desc-ti{
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.desc{
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6);
+    height: 100%;
+    max-height: 100%;
+    background-color: aliceblue;
+    border-radius: 4%;
+    padding: 26px 32px 32px 32px;
+}
+.formulario{
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6);
+    height: 100%;
+    background-color: aliceblue;
+    padding: 16px;
+    border-radius: 4%;
+}
+
+.desc p{
+    font-size: 16px;
+    line-height: 1.4em;
+    margin-top: 32px;
+    font-family: 'roboto';
+}
+
+.desc h2, .desc h1{
+    font-family: 'Montserrat', sans-serif;
+}
+
+input[type="file"] {
+    display: none;
+}
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+body{
+    background-image: url("images/upload.jpg");
+}

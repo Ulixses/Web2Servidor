@@ -1,0 +1,105 @@
+{% extends "bootstrap/mybase_offline.html" %} 
+{% block title %} UliGra - Kaggle {% endblock title %} 
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('.static',filename='starter-template.css')}}"> 
+{% endblock styles %}
+
+{% block content %}
+<div class="container padding-0 div_center">
+    <div class="div_smaller">
+        <h1 class=""> Competiciones</h1>
+        <div class="starter-template" id="competiciones"></div>
+    </div>
+    <!-- <div class="top"></div>
+    <div class="bottom"></div> -->
+</div>
+
+<script type="text/babel">
+    var Competicion = React.createClass({
+        getInitialState: function (){  
+            return {} 
+        }, 
+
+        render: function () { 
+            var url = "/ranking/" + this.props.children.code;
+            var image = "/images/i" + this.props.children.number + ".jpg"
+            return (
+                
+                <div className="col-md-4">
+                    <div className="panel index_data">
+                        <div className="hovereffect">
+                            <img src={image} className="img-responsive"></img>
+                            <div className="overlay">
+                                <h2> {this.props.children.descripcion}</h2>                                        
+                                <h3>By: {this.props.children.username}</h3>
+                                <a href={url} className="info btn btn-primary">Ver competicion.</a>    
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className = "col-md-4">
+                                <p>Numero de envios:</p><br/>
+                                <p className="cont_n" >
+                                {this.props.children.total}
+                                </p> 
+                            </div>
+                            <div className = "col-md-4">
+                                <p>Fecha de fin:</p><br/>
+                                <p className="cont_date" >
+                                {this.props.children.fin}
+                                </p> 
+                            </div>
+                            <div className = "col-md-4">
+                                <p>Puntuacion máxima:</p><br/>
+                                <p className="cont_n" >
+                                {this.props.children.max_score}
+                                </p> 
+ 
+                            </div>
+                        </div>
+                    </div >
+                   
+                </div>
+            )
+        }
+    }); 
+
+    var Board = React.createClass({
+        getInitialState: function () { 
+            return {  
+                comps: [] 
+            } 
+        }, 
+        eachComp: function (text, i) { 
+            console.log(text);
+            return (
+                <Competicion key={i} code={text.code} desc={text.code} user={text.user}>
+                    {text}
+                </Competicion>
+            )
+        },
+
+        componentDidMount() { 
+            fetch(window.location.href + 'competiciones')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ comps: data });
+            }); 
+        }, 
+
+        render: function () {
+            return (
+                <div>
+                    <div className="row">
+                        {this.state.comps.map(this.eachComp)}
+                    </div>
+                </div>
+            )
+        }   
+    });
+
+    ReactDOM.render( <Board/>, document.getElementById('competiciones'));
+</script>
+
+{% endblock content %}

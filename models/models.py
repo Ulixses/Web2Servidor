@@ -55,7 +55,7 @@ class Competition(UserMixin, db.Model):
     creation_date = db.Column(db.DateTime, default=datetime.now)
     inicio_date = db.Column(db.DateTime)
     final_date = db.Column(db.DateTime)
-    intervalo_subida = db.Column(db.Integer)
+    intervalo_subida = db.Column(db.Integer, default=10)
     num_max_intentos = db.Column(db.Integer)
     descripcion = db.Column(db.String(1000))
 

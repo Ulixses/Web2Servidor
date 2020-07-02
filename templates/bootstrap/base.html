@@ -1,50 +1,43 @@
 {% block doc -%}
 <!DOCTYPE html>
+
 <html{% block html_attribs %}{% endblock html_attribs %}>
-{%- block html %}
-  <head>
-    {%- block head %}
-    <title>{% block title %}{{title|default}}{% endblock title %}</title>
+    {%- block html %}
 
-    {%- block metas %}
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {%- endblock metas %}
+    <head>
+        {%- block head %}
+        <title>{% block title %}{{title|default}}{% endblock title %}</title>
 
-    {%- block styles %}
-    <!-- Bootstrap -->
-    <link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
-    {%- endblock styles %}
-    {%- endblock head %}
-  </head>
-  <body{% block body_attribs %}{% endblock body_attribs %}>
-    {% block body -%}
-    {% block navbar %}
-    {%- endblock navbar %}
+        {%- block metas %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> {%- endblock metas %} {%- block styles %}
+        <!-- Bootstrap -->
+        <link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
+        <link rel="stylesheet" href="{{url_for('.static',filename='uli.css')}}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+        <!-- React -->
+        <script src="../static/react.js"></script>
+        <script src="../static/react-dom.js"></script>
+        <script src="../static/browser.min.js"></script>
+        {%- endblock styles %} {%- endblock head %}
+    </head>
+    <body{% block body_attribs %}{% endblock body_attribs %}>
+        {% block body -%} {% block navbar %} {%- endblock navbar %} {% block alert %}
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main ontop">
+            <div class="container">
+                {% for message in get_flashed_messages() %}
+                <div class="alert alert-warning">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button> {{ message }} {% endfor %}
+                </div>
+            </div>
 
-    {% block alert %}
-      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <div class="container">
-            {% for message in get_flashed_messages() %} <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                {{ message }}
-            {% endfor %}
-          </div>
-      </div>
+        </div>
+        {% endblock alert %} {% block content -%} {%- endblock content %} {% block scripts %}
+        <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
+        <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
+        {{ moment.include_moment() }} {%- endblock scripts %} {%- endblock body %}
+        </body>
+        {%- endblock html %}
 
-      </div>
-    {% endblock alert %}
-
-
-    {% block content -%}
-    {%- endblock content %}
-
-    {% block scripts %}
-    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
-    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
-	{{ moment.include_moment() }}
-    {%- endblock scripts %}
-    {%- endblock body %}
-  </body>
-{%- endblock html %}
-</html>
-{% endblock doc -%}
+        </html>
+        {% endblock doc -%}

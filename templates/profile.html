@@ -2,23 +2,116 @@
 
 {% block title %} Perfil {% endblock title %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('.static',filename='profile.css')}}">
+
+{% endblock styles %}
 
 {% block content %}
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <div class="container" style="margin:0; padding:0; width: 100%;">
+            <div class="row">
+              <div class="col-md-4 formulario">
+                <form class="form-signin" method="POST" action="{{url_for('profile')}}">
+                  <h2 class="form-signin-heading">Perfil</h2>
+                      {{ form.hidden_tag() }}
+                      {{ wtf.form_field(form.username,readonly="readonly") }}
+                      {{ wtf.form_field(form.email,value=form.email.data) }}
+                      {{ wtf.form_field(form.password) }}
+                      {{ wtf.form_field(form.type_user,readonly="readonly") }}
+          
+                  <button class="btn btn-lg btn-primary btn-block" type="submit">Actualizar datos</button>
+                  </form>
+              </div>
+              <div class="col-md-7 col-md-offset-1 desc">
+                <div class="">
+                  <div class="row top-info">
+                    <h1>Informacion Personal</h1>
+                    <div class="col-md-6">
+                      <h2>Intentos que has enviado:</h2>
+                      <h3 class="counter" data-target="{{data['pred_total']}}">0</h3>
+                    </div>
+                    <div class="col-md-offset-1 col-md-5">
+                      <h2>Puntuacion record:</h2>
+                      <h3 class="counter" data-target="{{data['max_score']}}">0</h3>
+                    </div>
+                  </div>
+                  <div class="row bot-info">
+                    <div class="col-md-6 ">
+                      {% if current_user.type_user == 2 %}
+                    <!-- Desafiante -->
+                    <h2>Cuantas competciones has creado:</h2>
+                    <h3 class="counter" data-target="{{data['comp_total']}}">0</h3>
+                    {%elif current_user.type_user == 3 %}
+                      <!-- Jugador -->
+                    {%endif%}
+                    </div>
+                    <div class=" col-md-offset-1 col-md-5">
+                      <h2>Competiciones en las que has participado:</h2>
+                      <h3 class="counter" data-target="{{data['part_total']}}">0</h3>                      
+                    </div>
 
-    	  <form class="form-signin" method="POST" action="{{url_for('profile')}}">
-    		<h2 class="form-signin-heading">Perfil</h2>
-            {{ form.hidden_tag() }}
-            {{ wtf.form_field(form.username,readonly="readonly") }}
-            {{ wtf.form_field(form.email) }}
-            {{ wtf.form_field(form.password) }}
-            {{ wtf.form_field(form.type_user,readonly="readonly") }}
+                  </div>
+                  
+                  
+                  
+                  
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+        {% if current_user.type_user == 2 %}
+        <br>
+        <br>
+        <h1 class="desc-ti" style="text-align: center;"">Tus competiciones</h1>
 
-    		<button class="btn btn-lg btn-primary btn-block" type="submit">Actualizar datos</button>
-    	  </form>
+        <div class="table-responsive uli-table">
+          <table id="myTable" class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Nombre del usuario</th>
+                <th>Competición</th>
+                <th>Código para competir</th>
+                <th>Fecha de creación</th>
+                <th>Fecha de Inicio</th>
+                <th>Fecha de Fin</th>
+                <th>Max Intentos</th>
+                <th>Descripcion</th>
+                <th>Intervalo de subida</th>
+              </tr>
+            </thead>
 
+
+            <tbody>
+              {% for row in rows %}
+              <tr>
+                  <td>{{ row.id }}</td>
+                  <td>{{ row.username }}</td>
+                  <td class="big-link"><a href="/ranking/{{ row.competioncode }}" >Ver competicion</a></td>
+                  <td class="big-link"><a href="/code/{{ row.competioncode }}.py" download>Descargar <br> archivos</a></td>
+                  <td>{{ row.creation_date }}</td>
+                  <td>{{ row.inicio_date }}</td>
+                  <td>{{ row.final_date }}</td>
+                  <td>{{ row.num_max_intentos }}</td>
+                  <td>{{ row.descripcion }}</td>
+                  <td>{{ row.intervalo_subida }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {%endif%}
       </div>
     </div>
 {% endblock content %}
+
+{% block scripts  %}
+{{super()}}
+<script type="text/javascript" src="{{url_for('.static',filename='profile.js')}}"></script>
+
+{% endblock%}
